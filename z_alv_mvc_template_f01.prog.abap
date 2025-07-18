@@ -1,5 +1,9 @@
 CLASS lcl_mvc_view IMPLEMENTATION.
 
+  "! <p class="shorttext synchronized" lang="en">Constructor for MVC View</p>
+  "! Initializes the view with model and controller references, creates container and ALV grid
+  "! @parameter io_model | Reference to the model object
+  "! @parameter io_controller | Reference to the controller object
   METHOD constructor.
     go_model = io_model.
     go_controller = io_controller.
@@ -18,6 +22,9 @@ CLASS lcl_mvc_view IMPLEMENTATION.
 
   ENDMETHOD.                    "constructor
 
+  "! <p class="shorttext synchronized" lang="en">Display ALV grid with data</p>
+  "! Sets up field catalog, layout, handlers and displays the ALV table
+  "! @parameter ct_alv | ALV table data to be displayed
   METHOD display.
 *    automatic generation fcat
     init_fcat( ct_alv ).
@@ -36,6 +43,8 @@ CLASS lcl_mvc_view IMPLEMENTATION.
         it_fieldcatalog = gt_fcat[] ).
   ENDMETHOD.                    "display
 
+  "! <p class="shorttext synchronized" lang="en">Refresh ALV table display</p>
+  "! Refreshes the ALV table display without scrolling to top, maintaining current position
   METHOD refresh.
 *    refresh without scroll to top
     DATA ls_stable TYPE lvc_s_stbl.
@@ -45,6 +54,9 @@ CLASS lcl_mvc_view IMPLEMENTATION.
     go_table->refresh_table_display( is_stable = ls_stable ).
   ENDMETHOD.                    "refresh
 
+  "! <p class="shorttext synchronized" lang="en">Initialize field catalog for ALV</p>
+  "! Automatically generates field catalog based on the structure of the ALV table
+  "! @parameter it_alv | ALV table structure used for field catalog generation
   METHOD init_fcat.
     DATA:
       lo_row TYPE REF TO data,
@@ -65,6 +77,8 @@ CLASS lcl_mvc_view IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.                    "init_fcat
 
+  "! <p class="shorttext synchronized" lang="en">Update field catalog with custom settings</p>
+  "! Customizes field catalog entries with specific business logic settings
   METHOD update_fcat.
     FIELD-SYMBOLS: <ls_fcat>  TYPE LINE OF lvc_t_fcat.
 
@@ -82,24 +96,36 @@ CLASS lcl_mvc_view IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.                    "update_fcat
 
+  "! <p class="shorttext synchronized" lang="en">Initialize ALV layout settings</p>
+  "! Sets up basic layout properties for the ALV display
   METHOD init_layout.
     gs_layout-zebra = abap_true.
   ENDMETHOD.                    "init_layout
 
+  "! <p class="shorttext synchronized" lang="en">Attach event handlers to ALV</p>
+  "! Registers event handlers and enables edit events for the ALV grid
   METHOD attach_handlers.
     go_table->register_edit_event( cl_gui_alv_grid=>mc_evt_enter ).
 
     SET HANDLER go_controller->handle_double_click FOR go_table.
   ENDMETHOD.                    "attach_handlers
 
+  "! <p class="shorttext synchronized" lang="en">Display error message</p>
+  "! Shows an error message to the user
+  "! @parameter iv_message | Error message text to display
   METHOD error_message.
     MESSAGE iv_message TYPE 'E'.
   ENDMETHOD.                    "error_message
 
+  "! <p class="shorttext synchronized" lang="en">Display information message</p>
+  "! Shows an information message to the user
+  "! @parameter iv_message | Information message text to display
   METHOD info_message.
     MESSAGE iv_message TYPE 'I'.
   ENDMETHOD.                    "info_message
 
+  "! <p class="shorttext synchronized" lang="en">Check for changed data in ALV</p>
+  "! Validates and processes any changed data in the ALV grid
   METHOD check_changed_data.
     go_table->check_changed_data( ).
   ENDMETHOD.                    "check_changed_data
